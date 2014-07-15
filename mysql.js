@@ -8,7 +8,6 @@ var mysql   = require('mysql')
       password : process.env.mysql_password,
       database : process.env.mysql_database
     });
-
 dbconnection.connect(function(err) {
   // connected! (unless `err` is set)
   if (err) {
@@ -17,6 +16,7 @@ dbconnection.connect(function(err) {
     console.log("Database connection successful.");
   }
 });
+
 
 
 function handleDisconnect(dbconnection) {
@@ -39,20 +39,18 @@ function handleDisconnect(dbconnection) {
 
 handleDisconnect(dbconnection);
 
-// Testing with a table representing a simple analytics event list:
-// CREATE TABLE `Events` (
-//  `Id` INT UNSIGNED NOT NULL AUTO_INCREMENT ,
-//  `ApplicationId` VARCHAR(64) NOT NULL ,
-//  `Description` VARCHAR(255) NOT NULL ,
-//  `Logged` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ,
-//  PRIMARY KEY (`Id`) )
-//  ENGINE = InnoDB;
-// )
-
 exports.createEvent = function (data, callback) {
-  var queryData = {
-    ApplicationId         : data[0],
-    Description           : data[1]
-  }
-  dbconnection.query('INSERT INTO Events SET ?', queryData, callback);
+	console.log(data);
+	// Inserting our data and making sure it goes under correct app by FK
+	var sql = 'INSERT INTO Events SET DeviceIdentifier =' + dbconnection.escape(data[0]) +
+			  ',Description = '+ dbconnection.escape(data[1])+
+			  ', Applications_Id = (SELECT Id FROM Applications WHERE ApiKey = '+dbconnection.escape(data[2])+')'; 
+	console.log(sql);
+	dbconnection.query(sql, callback);
 };
+
+exports.getApps = function (callback) {
+	dbconnection.query('SELECT ApiKey, ApiSecret FROM Applications', callback);
+}
+
+
