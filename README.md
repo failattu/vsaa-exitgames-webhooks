@@ -11,6 +11,10 @@ Based on examples from
 
 This project depends on several npm packages. Make sure you have npm packages restify, restify-oauth2, underscore, crypto and mysql installed before trying to run it.
 
+v.0.0.2
+---
+Moved app credentials to MySQL and changed the example schema. It is now provided as a separate file.
+
 v.0.0.1
 ---
 Initial commit with two REST entry points:
