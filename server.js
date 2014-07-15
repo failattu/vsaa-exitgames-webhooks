@@ -1,13 +1,16 @@
 "use strict";
 
+global.db = require("./mysql"); // This is a bit of a hack and outdated way of doing things...
+
 var restify = require("restify");
 var restifyOAuth2 = require("restify-oauth2");
 var hooks = require("./hooks");
-var db = require("./mysql");
+
+
 
 var server = restify.createServer({
     name: "Very Simple Application Analytics Server",
-    version: "0.0.1",
+    version: "0.0.2",
     formatters: {
         "application/hal+json": function (req, res, body) {
             return res.formatters["application/json"](req, res, body);
@@ -51,8 +54,9 @@ server.post(RESOURCES.EVENT, function (req, res) {
         return res.sendUnauthenticated();
     }
 	var fields = [
-    	req.body.ApiKey,
+    	req.body.DeviceId,
     	req.body.Description,
+    	req.body.ApiKey
   	];
   	var response = {
 			"success": "event recorded successfully",
