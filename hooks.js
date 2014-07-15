@@ -3,12 +3,34 @@
 var _ = require("underscore");
 var crypto = require("crypto");
 
+// This could be changed to a more appropriate, SQL based solution, but for speed it is nice to have these in RAM...
 var database = {
     clients: {
-        clientApplication: { secret: "CCC9934845FDB409D5B279EB26181B10BB856763" }
+        clientApplication: "CCC9934845FDB409D5B279EB26181B10BB856763"
     },
     tokensToClientIds: {}
 };
+
+function refreshAppDatabase()
+{
+	db.getApps(function (err, result) {
+    	if (err) {
+    		return; // Not really a proper way to handle errors...
+  		}
+  		var apps = {};
+  		for (var i = 0; i < result.length; i++)
+  		{
+  			apps[result[i].ApiKey] = result[i].ApiSecret;
+  		}
+  		var tokens = database.tokensToClientIds;
+  		database = {
+  			clients: apps,
+  			tokensToClientIds: tokens
+  		};
+	});
+}
+
+refreshAppDatabase(); // Fetch our api keys from the database
 
 function generateToken(data) {
     var random = Math.floor(Math.random() * 100001);
@@ -19,8 +41,11 @@ function generateToken(data) {
 }
 
 exports.grantClientToken = function (credentials, req, cb) {
+	
+	refreshAppDatabase(); // Lets refresh our database... this, however isn't instant so refactoring is needed...
+	
     var isValid = _.has(database.clients, credentials.clientId) &&
-                  database.clients[credentials.clientId].secret === credentials.clientSecret;
+                  database.clients[credentials.clientId] === credentials.clientSecret;
     if (isValid) {
         // If the client authenticates, generate a token for them and store it so `exports.authenticateToken` below
         // can look it up later.
