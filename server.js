@@ -76,6 +76,8 @@ server.post(RESOURCES.EVENT, function (req, res) {
 			}
   		}
   	});
+  	if (req.body.message_type === 'APPLICATION_EVENT_QUIT')
+  		hooks.invalidateClientToken(req.authorization.credentials);
     res.contentType = "application/hal+json";
     res.send(response);
 });

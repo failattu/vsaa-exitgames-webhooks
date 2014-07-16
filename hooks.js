@@ -8,7 +8,7 @@ var database = {
     clients: {
         clientApplication: "CCC9934845FDB409D5B279EB26181B10BB856763"
     },
-    tokensToClientIds: {}
+    tokensToDeviceIds: {},
 };
 
 function refreshAppDatabase()
@@ -22,10 +22,10 @@ function refreshAppDatabase()
   		{
   			apps[result[i].ApiKey] = result[i].ApiSecret;
   		}
-  		var tokens = database.tokensToClientIds;
+  		var tokens = database.tokensToDeviceIds;
   		database = {
   			clients: apps,
-  			tokensToClientIds: tokens
+  			tokensToDeviceIds: tokens
   		};
 	});
 }
@@ -40,6 +40,11 @@ function generateToken(data) {
     return sha256.update(data).digest("base64");
 }
 
+exports.invalidateClientToken = function (token)
+{
+	database.tokensToDeviceIds = _.omit(database.tokensToDeviceIds,token); // Grab the token our client has used and remove it from list
+}
+
 exports.grantClientToken = function (credentials, req, cb) {
 	
 	refreshAppDatabase(); // Lets refresh our database... this, however isn't instant so refactoring is needed...
@@ -49,9 +54,8 @@ exports.grantClientToken = function (credentials, req, cb) {
     if (isValid) {
         // If the client authenticates, generate a token for them and store it so `exports.authenticateToken` below
         // can look it up later.
-
         var token = generateToken(credentials.clientId + ":" + credentials.clientSecret);
-        database.tokensToClientIds[token] = credentials.clientId;
+        database.tokensToDeviceIds[token] = req.body.DeviceId;
 
         // Call back with the token so Restify-OAuth2 can pass it on to the client.
         return cb(null, token);
@@ -63,10 +67,10 @@ exports.grantClientToken = function (credentials, req, cb) {
 };
 
 exports.authenticateToken = function (token, req, cb) {
-    if (_.has(database.tokensToClientIds, token)) {
+    if (_.has(database.tokensToDeviceIds, token)) {
         // If the token authenticates, set the corresponding property on the request, and call back with `true`.
         // The routes can now use these properties to check if the request is authorized and authenticated.
-        req.clientId = database.tokensToClientIds[token];
+        req.clientId = database.tokensToDeviceIds[token];
         return cb(null, true);
     }
 
