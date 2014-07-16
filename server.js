@@ -1,6 +1,16 @@
 "use strict";
 
-global.db = require("./mysql"); // This is a bit of a hack and outdated way of doing things...
+var db_driver = "./";
+if (process.env.vsaa_dbms)
+{
+	db_driver += process.env.vsaa_dbms;
+}
+else
+{
+	db_driver += "mysql";
+}
+
+global.db = require(db_driver); // This is a bit of a hack and outdated way of doing things...
 
 var restify = require("restify");
 var restifyOAuth2 = require("restify-oauth2");
