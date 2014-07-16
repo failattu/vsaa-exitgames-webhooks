@@ -40,12 +40,10 @@ function handleDisconnect(dbconnection) {
 handleDisconnect(dbconnection);
 
 exports.createEvent = function (data, callback) {
-	console.log(data);
 	// Inserting our data and making sure it goes under correct app by FK
 	var sql = 'INSERT INTO Events SET DeviceIdentifier =' + dbconnection.escape(data[0]) +
 			  ',Description = '+ dbconnection.escape(data[1])+
 			  ', Applications_Id = (SELECT Id FROM Applications WHERE ApiKey = '+dbconnection.escape(data[2])+')'; 
-	console.log(sql);
 	dbconnection.query(sql, callback);
 };
 
