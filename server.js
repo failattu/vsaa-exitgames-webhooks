@@ -16,8 +16,6 @@ var restify = require("restify");
 var restifyOAuth2 = require("restify-oauth2");
 var hooks = require("./hooks");
 
-
-
 var server = restify.createServer({
     name: "Very Simple Application Analytics Server",
     version: "0.0.2",
