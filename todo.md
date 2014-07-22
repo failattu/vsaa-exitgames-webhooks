@@ -5,6 +5,7 @@ vsaa-server-nodejs To Do
 - [ ] Clustering for multi-core support
 - [ ] Setup scripts
 - [ ] Administrative interface
+- [ ] Access scopes
 - [ ] Interface for viewing analytics
 
 ## Nice-to-have
