@@ -1,6 +1,6 @@
 "use strict";
 
-var db_driver = "./";
+var db_driver = "./databases/";
 if (process.env.vsaa_dbms)
 {
 	db_driver += process.env.vsaa_dbms;
