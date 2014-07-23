@@ -10,6 +10,7 @@ if (cluster.isMaster) {
 
     cluster.on('exit', function (worker, code, signal) {
         console.log('worker ' + worker.process.pid + ' died');
+        cluster.fork();
     });
 } else {
     var db_driver = "./databases/";
@@ -17,7 +18,7 @@ if (cluster.isMaster) {
         db_driver += process.env.vsaa_dbms;
     }
     else {
-        db_driver += "mysql";
+        db_driver += "mssql";
     }
 
     global.db = require(db_driver); // This is a bit of a hack and outdated way of doing things...
