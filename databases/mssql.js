@@ -45,7 +45,7 @@ handleDisconnect(dbconnection);
 exports.createEvent = function (data, callback) {
     var request = new sql.Request(dbconnection);
     // Inserting our data and making sure it goes under correct app by FK
-    var queryDB = 'INSERT INTO Events SET DeviceIdentifier =' + data[0] + ',Description = ' + data[1] +', Applications_Id = (SELECT Id FROM Applications WHERE ApiKey = ' + data[2] + ')';
+    var queryDB = 'INSERT INTO Events (DeviceIdentifier,Description , Applications_Id) SELECT \'' + data[0] + '\' ,\'' + data[1] + '\' , Id FROM Applications WHERE ApiKey = \'' + data[2] + ' \' ';
     request.query(queryDB, callback);
 };
 
@@ -53,5 +53,6 @@ exports.getApps = function (callback) {
     var request = new sql.Request(dbconnection);
     request.query('SELECT ApiKey, ApiSecret FROM Applications', callback);
 }
+
 
 
