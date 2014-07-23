@@ -2,12 +2,7 @@
 'use strict';
 
 var mysql   = require('mysql')
-  , dbconnection = mysql.createConnection({
-      host     : process.env.mysql_host,
-      user     : process.env.mysql_user,
-      password : process.env.mysql_password,
-      database : process.env.mysql_database
-    });
+  , dbconnection = mysql.createConnection(config.mysql);
 dbconnection.connect(function(err) {
   // connected! (unless `err` is set)
   if (err) {

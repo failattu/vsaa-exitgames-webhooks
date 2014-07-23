@@ -3,11 +3,7 @@
 
 var mongojs = require("mongojs");
 
-// We assume the MongoDB host is local and no auth has been set. 
-// TODO: Modify for auth
-var uri = "vsaa"; 
-
-var dbconnection = mongojs.connect(uri, ["Applications","Events"]);
+var dbconnection = mongojs.connect(config.mongodb_uri, ["Applications","Events"]);
 
 var storeEvent = function (data, appid, callback)
 {

@@ -1,34 +1,18 @@
 "use strict";
 
-// Database driver selection
+// Configuration
+global.config = require("./config");
 
-var db_driver = "./databases/";
-if (process.env.vsaa_dbms) {
-	db_driver += process.env.vsaa_dbms;
-}
-else {
-    db_driver += "mysql";
-}
-
+global.db = require("./databases/"+config.db_driver); // This is a bit of a hack and outdated way of doing things...
 
 // Required node modules
 var restify = require("restify");
 var restifyOAuth2 = require("restify-oauth2");
 var cluster = require('cluster');
-
+var hooks = require("./hooks");
 
 // Process variables
 
-global.db = require(db_driver); // This is a bit of a hack and outdated way of doing things...
-
-var numCPUs = require('os').cpus().length;
-var port = 8080; // Default port to listen
-
-if (process.argc >= 2) {
-	port = parseInt(process.argv[2]); // Port can be also passed as an argument
-}
-
-var hooks = require("./hooks");
 var server = restify.createServer({
 	name: "Very Simple Application Analytics Server",
 	version: "0.0.3",
@@ -38,6 +22,12 @@ var server = restify.createServer({
 		}
 	}
 });
+
+var port = config.listen; // Default port to listen
+
+if (process.argc >= 2) {
+	port = parseInt(process.argv[2]); // Port can be also passed as an argument, this overrides config...
+}
 
 var RESOURCES = Object.freeze({
 	INITIAL: "/",
@@ -111,8 +101,8 @@ process.on('uncaughtException', function (err) {
 // Clustering to utilize all CPU cores
 if (cluster.isMaster) {
 
-    // Fork workers, one for each CPU.
-    for (var i = 0; i < numCPUs; i++) {
+    // Fork workers
+    for (var i = 0; i < config.workers; i++) {
         cluster.fork();
     }
 

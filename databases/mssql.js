@@ -2,16 +2,8 @@
 'use strict';
 
 var sql = require('mssql');
-var config = {
-    user: "username",
-    password: "password",
-    server: "server", // You can use 'localhost\\instance' to connect to named instance
-    database: "VSAA",
-    options: {
-        encrypt: false // Use this if you're on Windows Azure
-    }
-}
-var dbconnection = new sql.Connection(config);
+
+var dbconnection = new sql.Connection(config.mssql);
 dbconnection.connect(function (err) {
     // connected! (unless `err` is set)
     if (err) {
