@@ -9,7 +9,12 @@ Based on examples from
 [restify-oauth2](https://github.com/domenic/restify-oauth2) and 
 [node-mysql-json-server](https://github.com/frodefi/node-mysql-json-server).
 
-This project depends on several npm packages. Make sure you have npm packages restify, restify-oauth2, underscore, crypto and mysql installed before trying to run it.
+This project depends on several npm packages. Make sure you have npm packages restify, restify-oauth2, underscore, crypto, sharedmemory and mysql/mongodb installed before trying to run it.
+
+v.0.0.3
+---
+* Clustering and memory sharing between workers
+* Support for MongoDB and MSSQL
 
 v.0.0.2
 ---
