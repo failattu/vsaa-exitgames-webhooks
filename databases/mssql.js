@@ -3,9 +3,9 @@
 
 var sql = require('mssql');
 var config = {
-    user: "Username",
-    password: "Password",
-    server: "Server", // You can use 'localhost\\instance' to connect to named instance
+    user: "username",
+    password: "password",
+    server: "server", // You can use 'localhost\\instance' to connect to named instance
     database: "VSAA",
     options: {
         encrypt: false // Use this if you're on Windows Azure
@@ -44,7 +44,6 @@ handleDisconnect(dbconnection);
 
 exports.createEvent = function (data, callback) {
     var request = new sql.Request(dbconnection);
-    console.log("event");
     // Inserting our data and making sure it goes under correct app by FK
     var queryDB = 'INSERT INTO Events SET DeviceIdentifier =' + data[0] + ',Description = ' + data[1] +', Applications_Id = (SELECT Id FROM Applications WHERE ApiKey = ' + data[2] + ')';
     request.query(queryDB, callback);
