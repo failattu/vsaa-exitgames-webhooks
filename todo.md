@@ -2,7 +2,7 @@ vsaa-server-nodejs To Do
 ===
 
 ## Must have
-- [ ] Clustering for multi-core support
+- [x] Clustering for multi-core support
 - [ ] Setup scripts
 - [ ] Administrative interface
 - [ ] Access scopes
