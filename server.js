@@ -92,10 +92,11 @@ server.post(RESOURCES.EVENT, function (req, res) {
 	res.send(response);
 });
 
-// Adding error information...
+// Adding error information output, and killing process when this happens.
 process.on('uncaughtException', function (err) {
 	console.log("UNCAUGHT EXCEPTION ");
 	console.log("[Inside 'uncaughtException' event] " + err.stack || err.message);
+	process.exit(1);
 });
 
 // Clustering to utilize all CPU cores
@@ -107,7 +108,8 @@ if (cluster.isMaster) {
     }
 
     cluster.on('exit', function (worker, code, signal) {
-    	console.log('worker ' + worker.process.pid + ' died');
+    	console.log('Worker ' + worker.process.pid + ' died');
+    	console.log('Spawining new worker...');
     	cluster.fork();
     });
 } 
