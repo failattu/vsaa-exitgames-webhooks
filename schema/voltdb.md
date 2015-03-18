@@ -27,7 +27,7 @@ PARTITION TABLE Applications ON COLUMN Id;
 -- -----------------------------------------------------
 
 CREATE TABLE Events (
-  `Id` INTEGER NOT NULL ,
+  `Id` VARCHAR(255) NOT NULL ,
   `DeviceIdentifier` VARCHAR(128) NOT NULL ,
   `Description` VARCHAR(255) NOT NULL ,
   `Logged` TIMESTAMP DEFAULT NOW ,
@@ -44,4 +44,4 @@ PARTITION TABLE Events ON COLUMN Applications_Id;
 
 CREATE PROCEDURE SelectApplication AS SELECT ApiKey, ApiSecret FROM Applications;
 
-CREATE PROCEDURE CreateEvent AS INSERT INTO Events (Id, DeviceIdentifier, Description, Applications_Id ) SELECT CAST (? AS INT), CAST(? AS VARCHAR),CAST (? AS VARCHAR), Id FROM Applications WHERE ApiKey = ?;
+CREATE PROCEDURE CreateEvent AS INSERT INTO Events (Id, DeviceIdentifier, Description, Applications_Id ) SELECT CAST (? AS VARCHAR), CAST(? AS VARCHAR),CAST (? AS VARCHAR), Id FROM Applications WHERE ApiKey = ?;
