@@ -37,3 +37,11 @@ CREATE TABLE Events (
 
 CREATE INDEX Logtime ON Events (Logged);
 PARTITION TABLE Events ON COLUMN Applications_Id;
+
+-- -------------------------------------------------------
+--Queries
+-- -------------------------------------------------------
+
+CREATE PROCEDURE SelectApplication AS SELECT ApiKey, ApiSecret FROM Applications;
+
+CREATE PROCEDURE CreateEvent AS INSERT INTO Events (Id, DeviceIdentifier, Description, Applications_Id ) SELECT CAST (? AS INT), CAST(? AS VARCHAR),CAST (? AS VARCHAR), Id FROM Applications WHERE ApiKey = ?;
