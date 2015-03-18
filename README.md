@@ -11,6 +11,10 @@ Based on examples from
 
 This project depends on several npm packages. Make sure you have npm packages restify, restify-oauth2, underscore, crypto, sharedmemory and mysql/mongodb installed before trying to run it. Easiest way to take care of this on Linux and OS X is to run install.sh, which does the module installations for you.
 
+v.0.0.4 [under work]
+npm install voltjs
+npm install node-uuid
+
 v.0.0.3
 ---
 * Clustering and memory sharing between workers
