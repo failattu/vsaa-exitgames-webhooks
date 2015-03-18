@@ -32,8 +32,8 @@ CREATE TABLE Events (
   `Description` VARCHAR(255) NOT NULL ,
   `Logged` TIMESTAMP DEFAULT NOW ,
   `Applications_Id` INTEGER NOT NULL ,
-  PRIMARY KEY (Id)
+  PRIMARY KEY (Id, Applications_Id)
   );
 
-CREATE INDEX Logtime ON towns (Logged);
+CREATE INDEX Logtime ON Events (Logged);
 PARTITION TABLE Events ON COLUMN Applications_Id;
