@@ -12,16 +12,31 @@ sharedMemoryController.set('clients',clients);
 sharedMemoryController.set('tokens',tokensToDeviceIds);
 
 function refreshAppDatabase()
-{
-	db.getApps(function (err, result) {
+{       
+	db.getApps(function (err, result, res) {
     	if (err) {
+                console.log(err)
     		return; // Not really a proper way to handle errors...
   		}
+                if(res)
+                {
+                 var apps = {}
+                 res = res.table
+                 res = res[0] 
+                 for (var i = 0; i < res.length; i++)
+                 {
+                    console.log(res[i].APISECRET)
+                    apps[res[i].APIKEY] = res[i].APISECRET;
+                 } 
+                }
+                else{
   		var apps = {};
   		for (var i = 0; i < result.length; i++)
   		{
   			apps[result[i].ApiKey] = result[i].ApiSecret;
   		}
+                }
+                console.log(apps);
   		sharedMemoryController.set('clients',apps);
 	});
 }
