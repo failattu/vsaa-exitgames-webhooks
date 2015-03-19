@@ -10,7 +10,7 @@ cfg.host = "localhost";
 cfg.port = 21212;
 
 var selectApplication = new VoltProcedure('SelectApplication');
-var createEvents = new VoltProcedure('CreateEvent', ['string', 'string', 'string']);
+var createEvents = new VoltProcedure('CreateEvent', ['string','string', 'string', 'string']);
 var configs = []
 configs.push(cfg);
 var client = new VoltClient(configs);
