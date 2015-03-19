@@ -6,7 +6,7 @@ var VoltConfiguration = require('voltjs/lib/configuration');
 var uuid = require('node-uuid');
 
 var cfg = new VoltConfiguration();
-cfg.host = "127.0.0.1";
+cfg.host = "localhost";
 cfg.port = 21212;
 
 var selectApplication = new VoltProcedure('SelectApplication');
@@ -17,28 +17,29 @@ var client = new VoltClient(configs);
 
 client.connect(function startup(results,event,results) {
   console.log('Node up');
-  console.log(connectionStats());
   dbinit();
 }, function loginError(results) {
-   console.log('Node up (on Error)');
+   console.log('Node Error)');
 });
 function dbinit()
 {
   //TODO: add automatic db creation and first application
   console.log("initialization to here");
+  connectionStats();
 }
 function connectionStats() {
   client.connectionStats();
 }
 exports.createEvent = function (data, callback) {
+   console.log("creating event")
    var query = createEvents.getQuery()
    var uuid1 = uuid.v4(); 
-   query.setParameters(uuid1,data[0],data[1],data[2]);
+   query.setParameters([uuid1,data[0],data[1],data[2]]);
    client.callProcedure(query, callback);
 };
 exports.getApps = function (callback) {
    var query = selectApplication.getQuery();
-   query.setParameters();
+   query.setParameters([]);
    client.callProcedure(query, callback);
 };
 
