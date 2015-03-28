@@ -1,47 +1,48 @@
 Example VoltDB Schema for testing
 ===
 
-VSAA uses very simple SQL Schema for data storage. It utilizes two tables, one for applications to store credentials and one for actual event data. Below you can find SQL CREATE script for preparing the database structure for vsaa.
-
 SQL Create script
 ---
 ---
 
 -- -----------------------------------------------------
--- Table `VSAA`.`Applications`
+-- Table `VSAA`.`GameState`
 -- -----------------------------------------------------
 
-CREATE TABLE Applications (
-  Id INTEGER NOT NULL ,
-  Name VARCHAR(64) NOT NULL ,
-  ApiKey VARCHAR(64) NOT NULL ,
-  ApiSecret VARCHAR(128) NOT NULL ,
-  ApiSalt VARCHAR(64) NOT NULL ,
-  PRIMARY KEY (Id)
+CREATE TABLE GameState (
+  AppID VARCHAR(128) NOT NULL ,
+  GameID VARCHAR(128) NOT NULL ,
+  JSONData VARCHAR(1240) NOT NULL ,
+  PRIMARY KEY (GameID, AppID)
 );
-PARTITION TABLE Applications ON COLUMN Id;
+PARTITION TABLE GameState ON COLUMN GameID;
 
 
 -- -----------------------------------------------------
--- Table `VSAA`.`Events`
+-- Table `VSAA`.`UserGame`
 -- -----------------------------------------------------
-
-CREATE TABLE Events (
-  `Id` VARCHAR(255) NOT NULL ,
-  `DeviceIdentifier` VARCHAR(128) NOT NULL ,
-  `Description` VARCHAR(255) NOT NULL ,
-  `Logged` TIMESTAMP DEFAULT NOW ,
-  `Applications_Id` INTEGER NOT NULL ,
-  PRIMARY KEY (Id, Applications_Id)
+<s
+CREATE TABLE UserGame (
+  AppID VARCHAR(128) NOT NULL ,
+  UserID VARCHAR(255) NOT NULL ,
+  GameID VARCHAR(128) NOT NULL
   );
-
-CREATE INDEX Logtime ON Events (Logged);
-PARTITION TABLE Events ON COLUMN Applications_Id;
+PARTITION TABLE UserGame ON COLUMN GameID;
 
 -- -------------------------------------------------------
 --Queries
 -- -------------------------------------------------------
 
-CREATE PROCEDURE SelectApplication AS SELECT ApiKey, ApiSecret FROM Applications;
+TODO: Create java store procedure for SetGame ,SetGameState and User .
 
-CREATE PROCEDURE CreateEvent AS INSERT INTO Events (Id, DeviceIdentifier, Description, Applications_Id ) SELECT CAST (? AS VARCHAR), CAST(? AS VARCHAR),CAST (? AS VARCHAR), Id FROM Applications WHERE ApiKey = ?;
+CREATE PROCEDURE SetGameState ;
+
+CREATE PROCEDURE GetGameState AS SELECT JSONData FROM GameState WHERE AppID = ? AND GameID = ?;
+
+CREATE PROCEDURE DelGameState AS DELETE FROM GameState WHERE AppID =? AND GameID =?;
+
+CREATE PROCEDURE SetUser ;
+
+CREATE PROCEDURE DelUser AS DELETE FROM UserGame WHERE AppID = ? AND GameID = ? AND UserID = ?;
+
+CREATE PROCEDURE SetGame;

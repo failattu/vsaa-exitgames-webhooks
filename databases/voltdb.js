@@ -9,8 +9,10 @@ var cfg = new VoltConfiguration();
 cfg.host = "localhost";
 cfg.port = 21212;
 
-var selectApplication = new VoltProcedure('SelectApplication');
-var createEvents = new VoltProcedure('CreateEvent', ['string','string', 'string', 'string']);
+var getState = new VoltProcedure('GetGameState', ['string','string']);
+var delState = new VoltProcedure('DelGameState', ['string','string']);
+var delUser = new VoltProcedure('DelUser', ['string','string','string']);
+
 var configs = []
 configs.push(cfg);
 var client = new VoltClient(configs);
@@ -21,25 +23,14 @@ client.connect(function startup(results,event,results) {
 }, function loginError(results) {
    console.log('Node Error)');
 });
+
 function dbinit()
 {
   //TODO: add automatic db creation and first application
   console.log("initialization to here");
   connectionStats();
 }
+
 function connectionStats() {
   client.connectionStats();
 }
-exports.createEvent = function (data, callback) {
-   console.log("creating event")
-   var query = createEvents.getQuery()
-   var uuid1 = uuid.v4(); 
-   query.setParameters([uuid1,data[0],data[1],data[2]]);
-   client.callProcedure(query, callback);
-};
-exports.getApps = function (callback) {
-   var query = selectApplication.getQuery();
-   query.setParameters([]);
-   client.callProcedure(query, callback);
-};
-
