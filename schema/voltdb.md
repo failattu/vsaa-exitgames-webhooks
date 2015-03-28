@@ -45,8 +45,6 @@ jar cvf storedprocs.jar *.class
 
 load classes storedprocs.jar;
 
-TODO: Create java store procedure for SetGame ,SetGameState and User .
-
 CREATE PROCEDURE FROM CLASS SetGameState ;
 
 CREATE PROCEDURE GetGameState AS SELECT JSONData FROM GameState WHERE AppID = ? AND GameID = ?;
