@@ -3,12 +3,12 @@ import org.voltdb.*;
 public class SetUser extends VoltProcedure {
 
   public final SQLStmt findCurrent = new SQLStmt(
-      "SELECT UserID, GameID, ActorID, AppID FROM GameState WHERE UserID = ? AND GameID = ? AND AppID = ?");
+      "SELECT UserID, GameID, ActorID, AppID FROM UserGame WHERE UserID = ? AND GameID = ? AND AppID = ?");
   public final SQLStmt updateExisting = new SQLStmt(
-      " UPDATE GameState SET ActorID=?,"
+      " UPDATE UserGame SET ActorID=?"
     + " WHERE UserID=? AND GameID=? AND AppID=?;");
   public final SQLStmt addNew = new SQLStmt(
-      " INSERT INTO GameState (UserID, GameID, ActorID, AppID) VALUES (?,?,?,?);");
+      " INSERT INTO UserGame (UserID, GameID, ActorID, AppID) VALUES (?,?,?,?);");
 
   public VoltTable[] run(String userID,
                          String gameID,

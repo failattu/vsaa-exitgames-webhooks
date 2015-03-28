@@ -21,7 +21,7 @@ PARTITION TABLE GameState ON COLUMN GameID;
 -- -----------------------------------------------------
 -- Table `VSAA`.`UserGame`
 -- -----------------------------------------------------
-<s
+
 CREATE TABLE UserGame (
   AppID VARCHAR(128) NOT NULL ,
   UserID VARCHAR(255) NOT NULL ,
@@ -31,17 +31,28 @@ CREATE TABLE UserGame (
 PARTITION TABLE UserGame ON COLUMN GameID;
 
 -- -------------------------------------------------------
+--Java Help
+-- -------------------------------------------------------
+
+javac -cp "$CLASSPATH:/opt/voltdb/voltdb/*" SetGameState.java
+javac -cp "$CLASSPATH:/opt/voltdb/voltdb/*" SetUser.java
+
+jar cvf storedprocs.jar *.class
+
+-- -------------------------------------------------------
 --Queries
 -- -------------------------------------------------------
 
+load classes storedprocs.jar;
+
 TODO: Create java store procedure for SetGame ,SetGameState and User .
 
-CREATE PROCEDURE SetGameState ;
+CREATE PROCEDURE FROM CLASS SetGameState ;
 
 CREATE PROCEDURE GetGameState AS SELECT JSONData FROM GameState WHERE AppID = ? AND GameID = ?;
 
 CREATE PROCEDURE DelGameState AS DELETE FROM GameState WHERE AppID =? AND GameID =?;
 
-CREATE PROCEDURE SetUser ;
+CREATE PROCEDURE FROM CLASS SetUser ;
 
 CREATE PROCEDURE DelUser AS DELETE FROM UserGame WHERE AppID = ? AND GameID = ? AND UserID = ?;
