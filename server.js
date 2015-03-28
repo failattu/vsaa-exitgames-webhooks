@@ -8,7 +8,8 @@ global.db = require("./databases/"+config.db_driver); // This is a bit of a hack
 // Required node modules
 var restify = require("restify");
 var cluster = require('cluster');
-
+var fail = {"ResultCode" : 1, "Message" : "Failed" }
+var ok = {"ResultCode" : 0}
 // Process variables
 
 var server = restify.createServer({
@@ -40,19 +41,85 @@ var RESOURCES = Object.freeze({
 
 
 server.get(RESOURCES.INITIAL, function (req, res) {
-
+	res.send("Hello World");
 });
 
 server.post(RESOURCES.CLOSE, function (req, res) {
-
+	if(req.body === undefined){
+		res.contentType = "application/json";
+		return res.send(fail);
+	}
+	jsonData = req.body;
+	if(jsonData.GameId == undefined){
+		fail.Mesage = "Missing GameId."
+		res.contentType = "application/json";
+		return res.send(fail);
+	}
+	if(jsonData.State == undefined){
+		if(jsonData.ActorCount > 0){
+			fail.Message = "Missing State."
+			res.contentType = "application/json";
+			return res.send(fail);
+		}
+		db.delGameState(jsonData.Appid,jsonData.GameId,function (err, result, res){
+				if (err) {
+        	console.log(err)
+    			res.contentType = "application/json";
+					return res.send(fail); // Not really a proper way to handle errors...
+  		}
+			else{
+				res.contentType = "application/json";
+				return res.send(ok);
+			}
+		});
+	}
+	if(jsonData.State != undefined){
+		for (key in jsonData.State.ActorList){
+			db.setUser(jsonData.State.ActorList[key].UserId, jsonData.Appid,jsonData.GameId, jsonData.State.ActorList[key].ActorNr,function(err, result, res){
+			});
+		}
+		db.setGameState(jsonData.Appid,jsonData.GameId, jsonData.State, function(err, result, res){
+			if (err) {
+				console.log(err)
+				res.contentType = "application/json";
+				return res.send(fail); // Not really a proper way to handle errors...
+			}
+			else{
+			res.contentType = "application/json";
+			return res.send(ok);
+			}
+		});
+	}
 });
 
 server.post(RESOURCES.JOIN, function (req, res) {
-
+	if(req.body === undefined){
+		res.contentType = "application/json";
+		return res.send(fail);
+	}
+	jsonData = req.body;
+	if(jsonData.GameId == undefined){
+		fail.Message = "Missing GameId."
+		res.contentType = "application/json";
+		return res.send(fail);
+	}
+	res.contentType = "application/json";
+	return res.send(ok);
 });
 
 server.post(RESOURCES.EVENT, function (req, res) {
-
+	if(req.body === undefined){
+		res.contentType = "application/json";
+		return res.send(fail);
+	}
+	jsonData = req.body;
+	if(jsonData.GameId == undefined){
+		fail.Message = "Missing GameId."
+		res.contentType = "application/json";
+		return res.send(fail);
+	}
+	res.contentType = "application/json";
+	return res.send(ok);
 });
 
 server.post(RESOURCES.CREATE, function (req, res) {

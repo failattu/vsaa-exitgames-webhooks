@@ -41,7 +41,7 @@ exports.setUser = function (userID, appID,gameID, actorID, callback) {
    query.setParameters([userID,gameID,actorID,appID]);
    client.callProcedure(query, callback);
 };
-exports.detUser = function (userID, appID,gameID, callback) {
+exports.delUser = function (userID, appID,gameID, callback) {
    var query = setUser.getQuery()
    query.setParameters([appID,gameID,userID]);
    client.callProcedure(query, callback);
