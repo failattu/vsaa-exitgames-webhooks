@@ -12,6 +12,8 @@ cfg.port = 21212;
 var getState = new VoltProcedure('GetGameState', ['string','string']);
 var delState = new VoltProcedure('DelGameState', ['string','string']);
 var delUser = new VoltProcedure('DelUser', ['string','string','string']);
+var setState = new VoltProcedure('SetGameState', ['string','string', 'string']);
+var setUser = new VoltProcedure('SetUser', ['string','string','string', 'string']);
 
 var configs = []
 configs.push(cfg);
