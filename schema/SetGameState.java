@@ -11,8 +11,8 @@ public class SetGameState extends VoltProcedure {
       " INSERT INTO GameState (GameID, AppID, JSONData) VALUES (?,?,?);");
 
   public VoltTable[] run(String jsonData,
-                         String appID,
-                         String gameID)
+                         String gameID,
+                         String appID)
       throws VoltAbortException {
 
           voltQueueSQL( findCurrent, appID, gameID );
