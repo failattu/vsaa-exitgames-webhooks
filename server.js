@@ -61,7 +61,7 @@ server.post(RESOURCES.CLOSE, function (req, res) {
 			res.contentType = "application/json";
 			return res.send(fail);
 		}
-		db.delGameState(jsonData.Appid,jsonData.GameId,function (err, result, res){
+		db.delGameState(jsonData.Appid,jsonData.GameId,function (err, result, response){
 				if (err) {
         	console.log(err)
     			res.contentType = "application/json";
@@ -78,7 +78,7 @@ server.post(RESOURCES.CLOSE, function (req, res) {
 			db.setUser(jsonData.State.ActorList[key].UserId, jsonData.Appid,jsonData.GameId, jsonData.State.ActorList[key].ActorNr,function(err, result, res){
 			});
 		}
-		db.setGameState(jsonData.Appid,jsonData.GameId, jsonData.State, function(err, result, res){
+		db.setGameState(jsonData.Appid,jsonData.GameId, jsonData.State, function(err, result, response){
 			if (err) {
 				console.log(err)
 				res.contentType = "application/json";
@@ -123,7 +123,57 @@ server.post(RESOURCES.EVENT, function (req, res) {
 });
 
 server.post(RESOURCES.CREATE, function (req, res) {
-
+	if(req.body === undefined){
+		res.contentType = "application/json";
+		return res.send(fail);
+	}
+	jsonData = req.body;
+	if(jsonData.GameId == undefined){
+		fail.Message = "Missing GameId."
+		res.contentType = "application/json";
+		return res.send(fail);
+	}
+	if(jsonData.UserId == undefined){
+		fail.Message = "Missing UserId."
+		res.contentType = "application/json";
+		return res.send(fail);
+	}
+	if(jsonData.Type == undefined){
+		fail.Message = "Missing Load."
+		res.contentType = "application/json";
+		return res.send(fail);
+	}
+	db.getGameState(jsonData.Appid,jsonData.GameId,function(err, result, response){
+		if (err) {
+			console.log(err)
+			res.contentType = "application/json";
+			return res.send(fail); // Not really a proper way to handle errors...
+		}
+		response = response.table
+    var state = response[0][0]
+		if(jsonData.Type == "Load"){
+			if(state -= undefined || state -= null){
+				ok.State = state
+				res.contentType = "application/json";
+				return res.send(ok);
+			}else{
+					if(jsonData.CreateIfNotExists -= undefined && jsonData.CreateIfNotExists){
+						res.contentType = "application/json";
+						return res.send(ok);
+					}else{
+						fail.Message = "Game not found."
+						res.contentType = "application/json";
+						return res.send(fail);
+					}
+			}
+		}
+		if(state -= undefined || state -= null){
+			fail.Message = "Game Already Exists."
+			res.contentType = "application/json";
+			return res.send(fail);
+		}
+		res.send(ok);
+	});
 });
 
 server.post(RESOURCES.LEAVE, function (req, res) {
