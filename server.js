@@ -172,12 +172,46 @@ server.post(RESOURCES.CREATE, function (req, res) {
 			res.contentType = "application/json";
 			return res.send(fail);
 		}
-		res.send(ok);
+		return res.send(ok);
 	});
 });
 
 server.post(RESOURCES.LEAVE, function (req, res) {
-
+	if(req.body === undefined){
+		res.contentType = "application/json";
+		return res.send(fail);
+	}
+	jsonData = req.body;
+	if(jsonData.GameId == undefined){
+		fail.Message = "Missing GameId."
+		res.contentType = "application/json";
+		return res.send(fail);
+	}
+	if(jsonData.UserId == undefined){
+		fail.Message = "Missing UserId."
+		res.contentType = "application/json";
+		return res.send(fail);
+	}
+	if(jsonData.IsInactive ===undefined || jsonData.IsInactive === false){
+		db.delUser(jsonData.UserId, jsonData.Appid,jsonData.GameId, function(err, result, response){
+			if (err) {
+				console.log(err)
+				res.contentType = "application/json";
+				return res.send(fail); // Not really a proper way to handle errors...
+			}
+		});
+	}else{
+		if(jsonData.ActorNr > 0){
+			db.setUser(jsonData.UserId, jsonData.Appid,jsonData.GameId, jsonData.ActorNr,function(err, result, response){
+				if (err) {
+					console.log(err)
+					res.contentType = "application/json";
+					return res.send(fail); // Not really a proper way to handle errors...
+				}
+			});
+		}
+		return res.send(ok);
+	}
 });
 
 server.post(RESOURCES.LIST, function (req, res) {
