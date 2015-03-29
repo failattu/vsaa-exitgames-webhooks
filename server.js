@@ -45,6 +45,7 @@ server.get(RESOURCES.INITIAL, function (req, res) {
 });
 
 server.post(RESOURCES.CLOSE, function (req, res) {
+	console.log("Close called")
 	if(req.body === undefined){
 		res.contentType = "application/json";
 		return res.send(fail);
@@ -66,16 +67,18 @@ server.post(RESOURCES.CLOSE, function (req, res) {
         	console.log(err)
     			res.contentType = "application/json";
 					return res.send(fail); // Not really a proper way to handle errors...
-  		}
-			else{
-				res.contentType = "application/json";
-				return res.send(ok);
+  			}else{
+					console.log("Game deleted")
+					res.contentType = "application/json";
+					return res.send(ok);
 			}
 		});
 	}
 	if(jsonData.State != undefined){
 		for (key in jsonData.State.ActorList){
-			db.setUser(jsonData.State.ActorList[key].UserId, jsonData.Appid,jsonData.GameId, jsonData.State.ActorList[key].ActorNr,function(err, result, res){
+
+				db.setUser(jsonData.State.ActorList[key].UserId, jsonData.Appid,jsonData.GameId, jsonData.State.ActorList[key].ActorNr,function(err, result, res){
+				console.log("User set")
 			});
 		}
 		db.setGameState(jsonData.Appid,jsonData.GameId, jsonData.State, function(err, result, response){
@@ -83,16 +86,17 @@ server.post(RESOURCES.CLOSE, function (req, res) {
 				console.log(err)
 				res.contentType = "application/json";
 				return res.send(fail); // Not really a proper way to handle errors...
-			}
-			else{
-			res.contentType = "application/json";
-			return res.send(ok);
+			}else{
+				console.log("Game set")
+				res.contentType = "application/json";
+				return res.send(ok);
 			}
 		});
 	}
 });
 
 server.post(RESOURCES.JOIN, function (req, res) {
+	console.log("Join called")
 	if(req.body === undefined){
 		res.contentType = "application/json";
 		return res.send(fail);
@@ -108,6 +112,7 @@ server.post(RESOURCES.JOIN, function (req, res) {
 });
 
 server.post(RESOURCES.EVENT, function (req, res) {
+	console.log("Event called")
 	if(req.body === undefined){
 		res.contentType = "application/json";
 		return res.send(fail);
@@ -123,6 +128,7 @@ server.post(RESOURCES.EVENT, function (req, res) {
 });
 
 server.post(RESOURCES.CREATE, function (req, res) {
+	console.log("Create Hook Called")
 	if(req.body === undefined){
 		res.contentType = "application/json";
 		return res.send(fail);
@@ -149,6 +155,7 @@ server.post(RESOURCES.CREATE, function (req, res) {
 			res.contentType = "application/json";
 			return res.send(fail); // Not really a proper way to handle errors...
 		}
+		console.log("Getting gamestate")
 		response = response.table
     var state = response[0][0]
 		if(jsonData.Type == "Load"){
@@ -177,6 +184,7 @@ server.post(RESOURCES.CREATE, function (req, res) {
 });
 
 server.post(RESOURCES.LEAVE, function (req, res) {
+	console.log("Leave called")
 	if(req.body === undefined){
 		res.contentType = "application/json";
 		return res.send(fail);
@@ -199,6 +207,7 @@ server.post(RESOURCES.LEAVE, function (req, res) {
 				res.contentType = "application/json";
 				return res.send(fail); // Not really a proper way to handle errors...
 			}
+			console.log("User deleted")
 		});
 	}else{
 		if(jsonData.ActorNr > 0){
@@ -208,6 +217,7 @@ server.post(RESOURCES.LEAVE, function (req, res) {
 					res.contentType = "application/json";
 					return res.send(fail); // Not really a proper way to handle errors...
 				}
+				console.log("User saved")
 			});
 		}
 		return res.send(ok);
