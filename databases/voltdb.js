@@ -42,7 +42,7 @@ exports.setUser = function (userID, appID,gameID, actorID, callback) {
    query.setParameters([userID,gameID,actorID,appID]);
    client.callProcedure(query, callback);
 };
-exports.getUser = function (userID, appID callback) {
+exports.getUser = function (userID, appID, callback) {
    var query = setUser.getQuery()
    query.setParameters([appID,userID]);
    client.callProcedure(query, callback);
