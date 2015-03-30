@@ -270,8 +270,7 @@ server.post(RESOURCES.LIST, function (req, res) {
 			res.contentType = "application/json";
 			ok.Data = list
 			res.send(ok);
-		});
-
+		}
 	});
 });
 
