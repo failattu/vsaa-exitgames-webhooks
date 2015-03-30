@@ -295,7 +295,7 @@ server.post(RESOURCES.PROPERTIES, function (req, res) {
 				return res.send(fail); // Not really a proper way to handle errors...
 			}else{
 				console.log("Game set")
-			});
+			}
 			if(jsonData.Properties != undefined){
 				console.log("properties");
 				if(jsonData.Properties.turn != undefined){
@@ -307,7 +307,7 @@ server.post(RESOURCES.PROPERTIES, function (req, res) {
 					}
 				}
 			}
-	}
+	});
 	return res.send(ok);
 });
 // Adding error information output, and killing process when this happens.
