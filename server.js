@@ -307,7 +307,8 @@ server.post(RESOURCES.PROPERTIES, function (req, res) {
 					}
 				}
 			}
-	});
+		});
+	}
 	return res.send(ok);
 });
 // Adding error information output, and killing process when this happens.
