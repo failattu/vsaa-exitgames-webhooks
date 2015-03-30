@@ -225,11 +225,91 @@ server.post(RESOURCES.LEAVE, function (req, res) {
 });
 
 server.post(RESOURCES.LIST, function (req, res) {
+	console.log("List called")
+	if(req.body === undefined){
+		res.contentType = "application/json";
+		return res.send(fail);
+	}
+	jsonData = req.body;
+	if(jsonData.UserId == undefined){
+		fail.Message = "Missing UserId."
+		res.contentType = "application/json";
+		return res.send(fail);
+	}
+	var list = {};
+	db.getUser(jsonData.UserId,jsonData.Appid, function(err, result, response){
+		if (err) {
+			console.log(err)
+			res.contentType = "application/json";
+			return res.send(fail); // Not really a proper way to handle errors...
+		}else{
+			console.log("User found")
+			response = response.table
+			var user = response[0]
+			for (var i = 0; i < user.length; i++){
+				gameid = user[i].GameID
+				actorNr = user[i].ActorID
+				db.getState(jsonData.Appid,gameid,function(err, result, response){
+					response = response.table
+					var game = response[0][0]
+					if(game != undefined){
+						list[gameid] = {ActorNr : actorNr, Properties : game.CustomProperties}
+					}
+					else{
+						db.delUser(jsonData.UserId, jsonData.Appid,gameid, function(err, result, response){
+							if (err) {
+								console.log(err)
+								res.contentType = "application/json";
+								return res.send(fail); // Not really a proper way to handle errors...
+							}
+							console.log("user deleted");
+						});
+					}
+				});
+			}
+			res.contentType = "application/json";
+			ok.Data = list
+			res.send(ok);
+		});
 
+	});
 });
 
 server.post(RESOURCES.PROPERTIES, function (req, res) {
-
+	console.log("Properties called")
+	if(req.body === undefined){
+		res.contentType = "application/json";
+		return res.send(fail);
+	}
+	jsonData = req.body;
+	if(jsonData.GameId == undefined){
+		fail.Message = "Missing GameId."
+		res.contentType = "application/json";
+		return res.send(fail);
+	}
+	if(jsonData.State != undefined){
+		state = jsonData.State;
+		db.setGameState(jsonData.Appid,jsonData.GameId, jsonData.State, function(err, result, response){
+			if (err) {
+				console.log(err)
+				res.contentType = "application/json";
+				return res.send(fail); // Not really a proper way to handle errors...
+			}else{
+				console.log("Game set")
+			});
+			if(jsonData.Properties != undefined){
+				console.log("properties");
+				if(jsonData.Properties.turn != undefined){
+					var turn = jsonData.Properties.turn;
+					actor = jsonData.State.ActorList[turn]
+					if(actor != undefined){
+						console.log("UserID: " + actor.UserId);
+						console.log("Playername: " + actor.Username)
+					}
+				}
+			}
+	}
+	return res.send(ok);
 });
 // Adding error information output, and killing process when this happens.
 process.on('uncaughtException', function (err) {

@@ -13,6 +13,7 @@ var delState = new VoltProcedure('DelGameState', ['string','string']);
 var delUser = new VoltProcedure('DelUser', ['string','string','string']);
 var setState = new VoltProcedure('SetGameState', ['string','string', 'string']);
 var setUser = new VoltProcedure('SetUser', ['string','string','string', 'string']);
+var setUser = new VoltProcedure('getUser', ['string', 'string']);
 
 var configs = []
 configs.push(cfg);
@@ -39,6 +40,11 @@ function connectionStats() {
 exports.setUser = function (userID, appID,gameID, actorID, callback) {
    var query = setUser.getQuery()
    query.setParameters([userID,gameID,actorID,appID]);
+   client.callProcedure(query, callback);
+};
+exports.getUser = function (userID, appID callback) {
+   var query = setUser.getQuery()
+   query.setParameters([appID,userID]);
    client.callProcedure(query, callback);
 };
 exports.delUser = function (userID, appID,gameID, callback) {
